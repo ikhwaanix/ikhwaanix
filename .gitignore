@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dev-dist/
+
+# Environment variables (jangan di-commit ke git!)
+.env
+.env.*
+!.env.example
+
+# IDE / Editor
+.gemini/
+.DS_Store
+.vscode/
+
+# Release builds
+release/
+
+# Legacy files
+server/db.json
+
+# Misc
+scratch/
+*.log
