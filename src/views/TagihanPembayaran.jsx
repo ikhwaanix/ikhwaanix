@@ -554,6 +554,19 @@ export default function TagihanPembayaran() {
       } else {
         // Native Download Action
         try {
+          // Minta izin ke Android
+          const permResult = await Filesystem.requestPermissions();
+          if (permResult.publicStorage !== 'granted' && permResult.publicStorage !== 'prompt') {
+            Swal.fire('Izin Ditolak', 'Aplikasi membutuhkan izin penyimpanan untuk mengunduh PDF ke HP Anda.', 'warning');
+            return;
+          }
+
+          Swal.fire({
+            title: 'Menyimpan PDF...',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+          });
+
           const pdfBase64 = doc.output('datauristring').split(',')[1];
           const result = await Filesystem.writeFile({
             path: fileName,
@@ -561,14 +574,27 @@ export default function TagihanPembayaran() {
             directory: Directory.Documents,
           });
           
-          await Share.share({
-            title: 'Kwitansi Tagihan',
-            text: 'Kwitansi Pembayaran Ikhwan 9',
-            url: result.uri,
+          Swal.close();
+          
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil Disimpan',
+            text: `File PDF telah berhasil disimpan di folder Documents.\n\nPath: ${result.uri}`,
+            confirmButtonText: 'Buka / Bagikan',
+            showCancelButton: true,
+            cancelButtonText: 'Tutup'
+          }).then(async (res) => {
+            if (res.isConfirmed) {
+              await Share.share({
+                title: 'Kwitansi Tagihan',
+                text: 'Kwitansi Pembayaran Ikhwan 9',
+                url: result.uri,
+              });
+            }
           });
         } catch (error) {
           console.error('File write error', error);
-          Swal.fire('Gagal', 'Gagal menyimpan atau membagikan file PDF.', 'error');
+          Swal.fire('Gagal Menyimpan', 'Terjadi kesalahan saat menyimpan PDF ke dalam HP. Pastikan sisa memori cukup.', 'error');
         }
       }
     } else {

@@ -4,6 +4,8 @@ import { KeyRound, User, QrCode, ScanLine, Eye, EyeOff } from 'lucide-react';
 import { api } from '../utils/api';
 import QrScanner from '../components/QrScanner';
 import Swal from 'sweetalert2';
+import { Capacitor } from '@capacitor/core';
+import { Camera } from '@capacitor/camera';
 
 export default function Login() {
   const { login, loginQR, registerPasskey, unlock, currentUser, settings } = useAppStore();
@@ -69,7 +71,18 @@ export default function Login() {
     }
   };
 
-  const handleQRScanClick = () => {
+  const handleQRScanClick = async () => {
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const permissions = await Camera.requestPermissions();
+        if (permissions.camera !== 'granted' && permissions.camera !== 'prompt') {
+          Swal.fire('Izin Ditolak', 'Aplikasi membutuhkan izin Kamera untuk memindai QR Code. Silakan izinkan di Pengaturan HP Anda.', 'warning');
+          return;
+        }
+      } catch (err) {
+        console.error("Camera permission error:", err);
+      }
+    }
     loadMockMembers();
     setShowQRModal(true);
   };
