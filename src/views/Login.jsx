@@ -432,17 +432,19 @@ export default function Login() {
                   </div>
                 </div>
 
-                <div className="login-buttons-row">
-                  <button type="submit" className="btn-primary flex-1 btn-interactive" disabled={loading}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '24px' }}>
+                  <button type="submit" className="btn-primary w-full btn-interactive" disabled={loading}>
                     {loading ? 'Memproses...' : 'Masuk Aplikasi'}
                   </button>
                   <button 
                     type="button" 
                     onClick={handleQRScanClick}
-                    className="btn-secondary btn-interactive"
-                    title="Scan QR Code ID Anggota"
+                    className="btn-primary w-full btn-interactive"
+                    style={{ backgroundColor: '#1b365d', borderColor: '#1b365d', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                    title="Login dengan KTA OPSHID"
                   >
                     <QrCode size={18} />
+                    Login dengan KTA OPSHID
                   </button>
                 </div>
               </form>
@@ -511,17 +513,19 @@ export default function Login() {
                   </div>
                 </div>
 
-                <div className="login-buttons-row">
-                  <button type="submit" className="btn-primary flex-1 btn-interactive" disabled={loading}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '24px' }}>
+                  <button type="submit" className="btn-primary w-full btn-interactive" disabled={loading}>
                     {loading ? 'Membuat Passkey...' : 'Daftarkan Passkey'}
                   </button>
                   <button 
                     type="button" 
                     onClick={handleQRScanClick}
-                    className="btn-secondary btn-interactive"
-                    title="Scan QR Code ID Anggota"
+                    className="btn-primary w-full btn-interactive"
+                    style={{ backgroundColor: '#1b365d', borderColor: '#1b365d', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                    title="Scan KTA OPSHID"
                   >
                     <QrCode size={18} />
+                    Scan KTA OPSHID
                   </button>
                 </div>
               </form>

@@ -15,6 +15,7 @@ const QrScanner = ({ onScanSuccess, onScanFailure }) => {
           console.error("QR Scan Error:", error);
         }}
         formats={['qr_code']}
+        constraints={{ facingMode: "environment" }}
       />
     </div>
   );
