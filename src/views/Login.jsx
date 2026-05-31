@@ -109,7 +109,7 @@ export default function Login() {
         handleMockQRSelect(member);
       }
     } else {
-      alert(`Anggota dengan ID Ikhwan ${decodedText} tidak ditemukan.`);
+      Swal.fire('Gagal', `Anggota dengan ID Ikhwan ${decodedText} tidak ditemukan.`, 'error');
       setShowQRModal(false);
     }
   };
@@ -440,7 +440,7 @@ export default function Login() {
                     type="button" 
                     onClick={handleQRScanClick}
                     className="btn-primary w-full btn-interactive"
-                    style={{ backgroundColor: '#1b365d', borderColor: '#1b365d', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                    style={{ backgroundColor: '#ffffff', borderColor: '#1b365d', color: '#1b365d', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
                     title="Login dengan KTA OPSHID"
                   >
                     <QrCode size={18} />
@@ -521,7 +521,7 @@ export default function Login() {
                     type="button" 
                     onClick={handleQRScanClick}
                     className="btn-primary w-full btn-interactive"
-                    style={{ backgroundColor: '#1b365d', borderColor: '#1b365d', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                    style={{ backgroundColor: '#ffffff', borderColor: '#1b365d', color: '#1b365d', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
                     title="Scan KTA OPSHID"
                   >
                     <QrCode size={18} />
