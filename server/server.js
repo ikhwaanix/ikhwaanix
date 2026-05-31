@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
+import path from 'path';
 
 dotenv.config({ path: fileURLToPath(new URL('../.env', import.meta.url)) });
 import cors from 'cors';
@@ -967,7 +968,20 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', app: 'Ikhwan 9 API', timestamp: new Date().toISOString() });
 });
 
+// Serve frontend static files from "dist" folder
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// Catch-all route to serve React App for non-API requests (Client-side Routing)
+app.get('*', (req, res) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ message: 'API Route Not Found' });
+  }
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
+
 // Start backend server listener
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server Backend Aplikasi Ikhwan 9 berjalan di http://0.0.0.0:${PORT}`);
+  console.log(`Server Backend & Frontend Aplikasi Ikhwan 9 berjalan di http://0.0.0.0:${PORT}`);
 });

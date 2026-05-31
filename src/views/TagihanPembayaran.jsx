@@ -3,6 +3,10 @@ import { useAppStore } from '../store/useAppStore';
 import { FileText, Download, Printer, Filter } from 'lucide-react';
 import { api } from '../utils/api';
 import { jsPDF } from 'jspdf';
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
+import Swal from 'sweetalert2';
 
 export default function TagihanPembayaran() {
   const { currentUser, settings } = useAppStore();
@@ -78,6 +82,8 @@ export default function TagihanPembayaran() {
   // =======================================================
   const handleDownloadPDF = async (action = 'download') => {
     if (!billData) return;
+    
+    try {
 
     const doc = new jsPDF({
       orientation: 'portrait',
@@ -535,11 +541,74 @@ export default function TagihanPembayaran() {
     // Signature name
     doc.text('Administrasi Ikhwaan 9', 145, y + 25);
 
-    if (action === 'print') {
-      doc.autoPrint();
-      window.open(doc.output('bloburl'), '_blank');
+    const fileName = `Tagihan_Ikhwan9_${billData.anggota.nama_lengkap.replace(/\s+/g, '_')}_${billData.tahun_hijriyyah}H.pdf`;
+
+    if (Capacitor.isNativePlatform()) {
+      if (action === 'print') {
+        Swal.fire({
+          icon: 'info',
+          title: 'Perhatian',
+          text: 'Silakan unduh (download) PDF terlebih dahulu, atau gunakan aplikasi versi Desktop (PC) untuk mencetak langsung.'
+        });
+        return;
+      } else {
+        // Native Download Action
+        try {
+          const pdfBase64 = doc.output('datauristring').split(',')[1];
+          const result = await Filesystem.writeFile({
+            path: fileName,
+            data: pdfBase64,
+            directory: Directory.Documents,
+          });
+          
+          await Share.share({
+            title: 'Kwitansi Tagihan',
+            text: 'Kwitansi Pembayaran Ikhwan 9',
+            url: result.uri,
+          });
+        } catch (error) {
+          console.error('File write error', error);
+          Swal.fire('Gagal', 'Gagal menyimpan atau membagikan file PDF.', 'error');
+        }
+      }
     } else {
-      doc.save(`Tagihan_Ikhwan9_${billData.anggota.nama_lengkap.replace(/\s+/g, '_')}_${billData.tahun_hijriyyah}H.pdf`);
+      // Desktop / Web / PWA Action
+      try {
+        if (action === 'print') {
+          doc.autoPrint();
+          const blobUrl = doc.output('bloburl');
+          const printWindow = window.open(blobUrl, '_blank');
+          if (!printWindow) {
+            Swal.fire('Terblokir Browser', 'Browser Anda memblokir jendela baru. Mohon izinkan Pop-up untuk situs ini.', 'warning');
+          }
+        } else {
+          // Download mechanism optimized for Web & iOS Safari PWA
+          const blob = doc.output('blob');
+          const blobUrl = URL.createObjectURL(blob);
+          
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = blobUrl;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          
+          // Cleanup
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(blobUrl);
+          }, 100);
+          
+          Swal.fire('Berhasil', 'PDF sedang diunduh...', 'success');
+        }
+      } catch (err) {
+        console.error('Download error:', err);
+        Swal.fire('Gagal', 'Terjadi kesalahan saat mengunduh PDF di browser ini.', 'error');
+      }
+    }
+    } catch (err) {
+      console.error('CRITICAL PDF ERROR:', err);
+      Swal.fire('Gagal Membuat PDF', 'Terjadi kesalahan saat memproses gambar KOP atau Foto Profil. Pastikan pengaturan benar.', 'error');
     }
   };
 

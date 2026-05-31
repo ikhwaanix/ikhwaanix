@@ -18,7 +18,8 @@
   },
   "build": {
     "appId": "com.ikhwaanix.app",
-    "productName": "Aplikasi Ikhwan 9",
+    "productName": "I9",
+    "icon": "logo.png",
     "directories": {
       "output": "release"
     },
@@ -45,6 +46,9 @@
   "dependencies": {
     "@capacitor/android": "^8.3.4",
     "@capacitor/core": "^8.3.4",
+    "@capacitor/filesystem": "^8.1.2",
+    "@capacitor/share": "^8.0.1",
+    "@capgo/capacitor-updater": "^8.47.5",
     "@yudiel/react-qr-scanner": "^2.6.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -63,7 +67,9 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^8.3.4",
+    "@capgo/cli": "^7.119.1",
     "@eslint/js": "^10.0.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

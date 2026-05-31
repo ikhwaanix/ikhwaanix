@@ -32,6 +32,16 @@ function createWindow() {
     autoUpdater.checkForUpdatesAndNotify();
   });
 
+  // Izinkan akses Kamera (media) untuk QR Code Desktop
+  mainWindow.webContents.session.setPermissionCheckHandler((webContents, permission) => {
+    if (permission === 'media') return true;
+    return false;
+  });
+  mainWindow.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
+    if (permission === 'media') return callback(true);
+    callback(false);
+  });
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });

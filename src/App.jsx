@@ -3,6 +3,7 @@ import { useAppStore } from './store/useAppStore';
 import Layout from './components/Layout';
 import Login from './views/Login';
 import Swal from 'sweetalert2';
+import { CapacitorUpdater } from '@capgo/capacitor-updater';
 
 // Import Views
 import DashboardAnggota from './views/DashboardAnggota';
@@ -55,6 +56,8 @@ export default function App() {
   // Load global system settings from Node.js server upon load
   useEffect(() => {
     loadSettings();
+    // Beri tahu Capgo bahwa app sukses dimuat (mencegah rollback)
+    CapacitorUpdater.notifyAppReady();
   }, []);
 
   // Synchronize CSS variable theme setting when state changes
